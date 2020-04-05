@@ -21,13 +21,16 @@ namespace UserManagementService.Controllers
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IMapper _mapper;
+        private readonly RoleManager<IdentityRole> _roleManager;
 
         public UserController(
             [NotNull] UserManager<ApplicationUser> userManager,
-            [NotNull] IMapper mapper)
+            [NotNull] IMapper mapper,
+            RoleManager<IdentityRole> roleManager)
         {
             _userManager = userManager;
             _mapper = mapper;
+            _roleManager = roleManager;
         }
 
         // GET: api/User
@@ -60,7 +63,16 @@ namespace UserManagementService.Controllers
         public async Task<IActionResult> Get(string id)
         {
             var user = await _userManager.FindByIdAsync(id);
-            return Ok(_mapper.Map<UiUserDetails>(user));
+            var roleNames = await _userManager.GetRolesAsync(user);
+            var roles = new List<IdentityRole>();
+            foreach(var roleName in roleNames)
+            {
+                var role = await _roleManager.FindByNameAsync(roleName);
+                roles.Add(role);
+            }
+            var uiUser = _mapper.Map<UiUserDetails>(user);
+            uiUser.Roles = _mapper.Map<List<UiRoleListItem>>(roles);
+            return Ok(uiUser);
         }
 
         // POST: api/User
@@ -107,9 +119,10 @@ namespace UserManagementService.Controllers
                 {
                     errorList.Add(new UiResponseMessage { Code = "identity_error", Message = identityError.Description });
                 }
-                return BadRequest(new UiResponse(false, errorList));                
+                return BadRequest(new UiResponse(false, errorList));
             }
 
+            await _userManager.AddToRolesAsync(applicationUser, userDetails.Roles.Select(x => x.Name));
             return Ok(new UiResponse(true, "user_created", "User created successfully."));
 
         }
@@ -176,6 +189,11 @@ namespace UserManagementService.Controllers
                 errorList.AddRange(IdentityResultToResponseMessages(updatePasswordResult));
                 return BadRequest(new UiResponse(false, errorList));
             }
+
+            var roles = await _userManager.GetRolesAsync(user);
+            await _userManager.RemoveFromRolesAsync(user, roles);
+            await _userManager.AddToRolesAsync(user, userDetails.Roles.Select(x => x.Name));
+
             return Ok(new UiResponse(true, "user_updated", "User updated successfully."));
         }
 

@@ -1,4 +1,5 @@
-﻿using IdentityServer4;
+﻿using IdentityModel;
+using IdentityServer4;
 using IdentityServer4.Models;
 using System;
 using System.Collections.Generic;
@@ -21,8 +22,8 @@ namespace AuthService.Configuration
         {
             return new []
             {
-                new Scope("patientManagement", "Patient Management", new []{ "patient/*" }),
-                new Scope("UserManagement", "User Management", new []{ "user/*" }),
+                new Scope("patientManagement", "Patient Management", new []{ "patient/*", JwtClaimTypes.Role }),
+                new Scope("UserManagement", "User Management", new []{ "user/*", JwtClaimTypes.Role }),
             };
         }
 
@@ -33,7 +34,7 @@ namespace AuthService.Configuration
                 new IdentityResources.OpenId(),
                 new IdentityResources.Profile(),
                 new IdentityResources.Email(),
-                new IdentityResource("UserManagementX", new[]{"none"})
+                new IdentityResource("role", "User roles", new[] { JwtClaimTypes.Role })
             };
         }
 
@@ -54,14 +55,15 @@ namespace AuthService.Configuration
                     RequireClientSecret = false,
                     RequirePkce = true,
                     RequireConsent = false,
-                    AllowAccessTokensViaBrowser = true,
+                    AllowAccessTokensViaBrowser = true,                    
 
                     AllowedScopes = new List<string>
                     {
                         IdentityServerConstants.StandardScopes.OpenId,
                         IdentityServerConstants.StandardScopes.Profile,
                         IdentityServerConstants.StandardScopes.Email,
-                        "UserManagement"
+                        "UserManagement",
+                        "role"
                     },
 
                     // where to redirect to after login
@@ -71,6 +73,7 @@ namespace AuthService.Configuration
                     PostLogoutRedirectUris = { "http://localhost:4200/logout" },
                     AllowedCorsOrigins = new List<string>
                     {
+                        "http://localhost:4200",
                         "http://localhost:8080"
                     },
                 },

@@ -1,4 +1,5 @@
-﻿using IdentityServer4.Models;
+﻿//copied from https://github.com/karpikpl/identity-server4-with-SPA-UI/blob/master/id4/src/IdentityServer/ReturnUrlParser.cs
+using IdentityServer4.Models;
 using IdentityServer4.Services;
 using IdentityServer4.Validation;
 using Microsoft.AspNetCore.WebUtilities;
@@ -14,7 +15,7 @@ using System.Threading.Tasks;
 // copied from https://github.com/IdentityServer/IdentityServer4/blob/63a50d7838af25896fbf836ea4e4f37b5e179cd8/src/Services/Default/OidcReturnUrlParser.cs
 // class is internal and cannot be extended :/
 
-namespace IdentityServerX
+namespace UserManagementService
 {
     public class ReturnUrlParser: IReturnUrlParser
     {
@@ -84,7 +85,7 @@ namespace IdentityServerX
 
     internal static class Extensions
     {
-        //[DebuggerStepThrough]
+        [DebuggerStepThrough]
         public static NameValueCollection ReadQueryStringAsNameValueCollection(this string url)
         {
             if (url != null)

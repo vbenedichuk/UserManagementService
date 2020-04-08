@@ -1,4 +1,4 @@
-﻿namespace AuthService.Models.Configuration
+﻿namespace UserManagementService.Models.Configuration
 {
     /// <summary>
     /// CertificateConfiguration config section.

@@ -1,11 +1,10 @@
 using System.Security.Cryptography.X509Certificates;
-using System.Text.Json;
 using UserManagementService.Data;
 using UserManagementService.Mapping;
 using UserManagementService.Models.Database;
 using UserManagementService.Services;
-using AuthService.Configuration;
-using AuthService.Models.Configuration;
+using UserManagementService.Configuration;
+using UserManagementService.Models.Configuration;
 using AutoMapper;
 using IdentityServer4;
 using IdentityServer4.Services;
@@ -83,7 +82,7 @@ namespace UserManagementService
                    options.Audience = "UserManagement";
                });
 
-            services.AddTransient<IReturnUrlParser, IdentityServerX.ReturnUrlParser>();
+            services.AddTransient<IReturnUrlParser, ReturnUrlParser>();
             services.AddTransient<IPersistedGrantStore, PersistedGrantStore>();
             services.AddCors(setup =>
             {

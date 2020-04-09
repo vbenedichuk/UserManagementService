@@ -11,12 +11,12 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace UserManagementService.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class UserController : ControllerBase
     {
         private readonly UserManager<ApplicationUser> _userManager;
@@ -35,6 +35,7 @@ namespace UserManagementService.Controllers
 
         // GET: api/User
         [HttpGet]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "Administators only")]
         public UiList<UiUserListItem> Get([FromQuery]string name,
             [FromQuery]int? skip,
             [FromQuery]int? take)
@@ -60,8 +61,13 @@ namespace UserManagementService.Controllers
 
         // GET: api/User/5
         [HttpGet("{id}", Name = "Get")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> Get(string id)
         {
+            if (!User.IsInRole("Admin") && id != User.FindFirstValue(ClaimTypes.NameIdentifier))
+            {
+                return NotFound();
+            }
             var user = await _userManager.FindByIdAsync(id);
             var roleNames = await _userManager.GetRolesAsync(user);
             var roles = new List<IdentityRole>();
@@ -77,6 +83,7 @@ namespace UserManagementService.Controllers
 
         // POST: api/User
         [HttpPost]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "Administators only")]
         public async Task<IActionResult> Post([FromBody] UiUserDetails userDetails)
         {
             if(userDetails == null || !ModelState.IsValid || userDetails.Id != "new")
@@ -129,15 +136,21 @@ namespace UserManagementService.Controllers
 
         // PUT: api/User/5
         [HttpPut("{id}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> Put(string id, [FromBody] UiUserDetails userDetails)
         {
+            if (!User.IsInRole("Admin") && id != User.FindFirstValue(ClaimTypes.NameIdentifier))
+            {
+                return BadRequest(new UiResponse(false, "invalid_input", "Invalid input."));
+            }
+
             if (userDetails == null || !ModelState.IsValid || userDetails.Id != id || string.IsNullOrWhiteSpace(userDetails.Id))
             {
                 return BadRequest(new UiResponse(false, "invalid_input", "Invalid input."));
             }
 
             var errorList = new List<UiResponseMessage>();
-
+            
             var userWithTheSameName = await _userManager.FindByNameAsync(userDetails.UserName);
             if (userWithTheSameName != null && userWithTheSameName.Id != id)
             {
@@ -186,14 +199,19 @@ namespace UserManagementService.Controllers
                 }
                 var updatePasswordResult = await _userManager.AddPasswordAsync(user, userDetails.Password);
 
-                errorList.AddRange(IdentityResultToResponseMessages(updatePasswordResult));
-                return BadRequest(new UiResponse(false, errorList));
+                if (!updatePasswordResult.Succeeded)
+                {
+                    errorList.AddRange(IdentityResultToResponseMessages(updatePasswordResult));
+                    return BadRequest(new UiResponse(false, errorList));
+                }
             }
 
-            var roles = await _userManager.GetRolesAsync(user);
-            await _userManager.RemoveFromRolesAsync(user, roles);
-            await _userManager.AddToRolesAsync(user, userDetails.Roles.Select(x => x.Name));
-
+            if (User.IsInRole("Admin"))
+            {
+                var roles = await _userManager.GetRolesAsync(user);
+                await _userManager.RemoveFromRolesAsync(user, roles);
+                await _userManager.AddToRolesAsync(user, userDetails.Roles.Select(x => x.Name));
+            }
             return Ok(new UiResponse(true, "user_updated", "User updated successfully."));
         }
 
@@ -212,14 +230,15 @@ namespace UserManagementService.Controllers
             return result;
         }
 
-        // DELETE: api/ApiWithActions/5
+        // DELETE: api/User/5
         [HttpDelete("{id}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "Administators only")]
         public async Task<IActionResult> Delete(string id)
         {
             var user = await _userManager.FindByIdAsync(id);
             if(user != null)
             {
-                var result = await _userManager.DeleteAsync(user);
+                await _userManager.DeleteAsync(user);
             }
             return Ok();
         }

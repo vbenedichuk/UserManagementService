@@ -19,6 +19,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using IdentityServer4.AccessTokenValidation;
 
 namespace UserManagementService
 {
@@ -48,6 +49,10 @@ namespace UserManagementService
 
             services.AddControllers().AddJsonOptions(opt => opt.JsonSerializerOptions.PropertyNamingPolicy = null);
             services.AddControllersWithViews().AddJsonOptions(opt => opt.JsonSerializerOptions.PropertyNamingPolicy = null);
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("Administators only", policy => policy.RequireRole("Admin"));
+            });
 
             services.Configure<CookieAuthenticationOptions>(IdentityServerConstants.DefaultCookieAuthenticationScheme, options =>
             {
@@ -84,6 +89,7 @@ namespace UserManagementService
 
             services.AddTransient<IReturnUrlParser, ReturnUrlParser>();
             services.AddTransient<IPersistedGrantStore, PersistedGrantStore>();
+            
             services.AddCors(setup =>
             {
                 setup.AddDefaultPolicy(policy =>
@@ -95,7 +101,7 @@ namespace UserManagementService
                 });
             });
 
-            var builder = services.AddIdentityServer(
+            services.AddIdentityServer(
                 options => {
                     options.UserInteraction.LoginUrl = "/Account/Login"; //"http://localhost:8082/index.html"; //"/api/auth/login";
                     options.UserInteraction.ErrorUrl = "/api/auth/error";
@@ -105,11 +111,12 @@ namespace UserManagementService
                     options.Events.RaiseFailureEvents = true;
                     options.Events.RaiseSuccessEvents = true;
                 })
+                .AddJwtBearerClientAuthentication()
                 .AddInMemoryIdentityResources(IdentityServerConfigurationHelper.GetIdentityResources())
                 .AddInMemoryApiResources(IdentityServerConfigurationHelper.GetApis())
                 .AddInMemoryClients(IdentityServerConfigurationHelper.GetClients())
-                .AddAspNetIdentity<ApplicationUser>();
-            builder.AddSigningCredential(new X509Certificate2(fileName, password));
+                .AddAspNetIdentity<ApplicationUser>()
+                .AddSigningCredential(new X509Certificate2(fileName, password));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -139,8 +146,9 @@ namespace UserManagementService
             app.UseCors();
 
             app.UseRouting();
-
             app.UseAuthentication();
+
+            //app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseIdentityServer();

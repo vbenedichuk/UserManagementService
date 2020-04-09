@@ -36,7 +36,8 @@ namespace UserManagementService.Controllers
         // GET: api/User
         [HttpGet]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "Administators only")]
-        public UiList<UiUserListItem> Get([FromQuery]string name,
+        public async Task<UiList<UiUserListItem>> Get(
+            [FromQuery]string name,
             [FromQuery]int? skip,
             [FromQuery]int? take)
         {
@@ -55,7 +56,13 @@ namespace UserManagementService.Controllers
                 query = query.Take(take.Value);
             }
             result.TotalCount = query.Count();
-            result.Items = _mapper.Map<List<UiUserListItem>>(query.ToList());
+            result.Items = new List<UiUserListItem>();
+            foreach(var user in query.ToList())
+            {
+                var listItem = _mapper.Map<UiUserListItem>(user);
+                listItem.Roles.AddRange((await _userManager.GetRolesAsync(user)).Select(x => new UiRoleListItem { Name = x }));
+                result.Items.Add(listItem);
+            }
             return result;
         }
 

@@ -66,7 +66,7 @@ namespace UserManagementService.Configuration
                     },
 
                     // where to redirect to after login
-                    RedirectUris = { "http://localhost:4200/callback" },
+                    RedirectUris = { "http://localhost:4200/callback", "http://localhost:4200/silent-renew.html" },
 
                     // where to redirect to after logout
                     PostLogoutRedirectUris = { "http://localhost:4200/logout" },

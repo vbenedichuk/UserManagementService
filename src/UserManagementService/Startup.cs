@@ -104,8 +104,8 @@ namespace UserManagementService
             services.AddIdentityServer(
                 options => {
                     options.UserInteraction.LoginUrl = "/Account/Login"; //"http://localhost:8082/index.html"; //"/api/auth/login";
-                    options.UserInteraction.ErrorUrl = "/api/auth/error";
-                    options.UserInteraction.LogoutUrl = "/api/auth/logout";
+                    options.UserInteraction.ErrorUrl = "/Home/error";
+                    options.UserInteraction.LogoutUrl = "/Account/logout";
                     options.Events.RaiseErrorEvents = true;
                     options.Events.RaiseInformationEvents = true;
                     options.Events.RaiseFailureEvents = true;

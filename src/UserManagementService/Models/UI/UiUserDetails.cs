@@ -1,19 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace UserManagementService.Models.UI
+﻿namespace UserManagementService.Models.UI
 {
+    /// <summary>
+    /// User details data structure.
+    /// </summary>
     public class UiUserDetails : UiUserListItem
     {
-        public UiUserDetails()
-        {
-            Roles = new List<UiRoleListItem>();
-        }
-
+        /// <summary>
+        /// Password
+        /// </summary>
         public string Password { get; set; }
+        /// <summary>
+        /// Password 2
+        /// </summary>
         public string Password2 { get; set; }
-        public List<UiRoleListItem> Roles { get; set; }
     }
 }

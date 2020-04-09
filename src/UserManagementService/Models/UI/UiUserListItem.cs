@@ -34,5 +34,14 @@ namespace UserManagementService.Models.UI
         /// Is phone number confirmed.
         /// </summary>
         public virtual bool PhoneNumberConfirmed { get; set; }
+        /// <summary>
+        /// User roles
+        /// </summary>
+        public List<UiRoleListItem> Roles { get; set; }
+
+        public UiUserListItem()
+        {
+            Roles = new List<UiRoleListItem>();
+        }
     }
 }

@@ -4,6 +4,7 @@ using UserManagementService.Mapping;
 using UserManagementService.Models.Database;
 using UserManagementService.Services;
 using UserManagementService.Configuration;
+using UserManagementService.Helpers;
 using UserManagementService.Models.Configuration;
 using AutoMapper;
 using IdentityServer4;
@@ -19,7 +20,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using IdentityServer4.AccessTokenValidation;
+using System;
+using System.Threading.Tasks;
+using UserManagementService.Abstractions;
 
 namespace UserManagementService
 {
@@ -87,8 +90,9 @@ namespace UserManagementService
                    options.Audience = "UserManagement";
                });
 
-            services.AddTransient<IReturnUrlParser, ReturnUrlParser>();
+            services.AddTransient<IReturnUrlParser, Helpers.ReturnUrlParser>();
             services.AddTransient<IPersistedGrantStore, PersistedGrantStore>();
+            services.AddTransient<IInitializationHelper, InitializationHelper>();
             
             services.AddCors(setup =>
             {
@@ -96,16 +100,19 @@ namespace UserManagementService
                 {
                     policy.AllowAnyHeader();
                     policy.AllowAnyMethod();
-                    policy.WithOrigins("http://127.0.0.1:8080", "http://localhost:8080", "http://localhost:8082", "http://localhost:4200");
+                    policy.WithOrigins("http://127.0.0.1:8080", 
+                        "http://localhost:8080", 
+                        "http://localhost:8082", 
+                        "http://localhost:4200");
                     policy.AllowCredentials();
                 });
             });
 
             services.AddIdentityServer(
                 options => {
-                    options.UserInteraction.LoginUrl = "/Account/Login"; //"http://localhost:8082/index.html"; //"/api/auth/login";
-                    options.UserInteraction.ErrorUrl = "/Home/error";
-                    options.UserInteraction.LogoutUrl = "/Account/logout";
+                    options.UserInteraction.LoginUrl = "/Account/Login";
+                    options.UserInteraction.ErrorUrl = "/Home/Error";
+                    options.UserInteraction.LogoutUrl = "/Account/Logout";
                     options.Events.RaiseErrorEvents = true;
                     options.Events.RaiseInformationEvents = true;
                     options.Events.RaiseFailureEvents = true;
@@ -138,6 +145,15 @@ namespace UserManagementService
                 context.Database.Migrate();
             }
 
+            using (var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
+            {
+                var context = serviceScope.ServiceProvider.GetService<ApplicationDbContext>();
+                var initializationHelper = serviceScope.ServiceProvider.GetService<IInitializationHelper>();
+                if (!context.Users.AnyAsync().Result && !context.Roles.AnyAsync().Result)
+                {
+                    initializationHelper.Initialize();
+                }
+            }
 
             app.UseHttpsRedirection();
 
@@ -148,7 +164,6 @@ namespace UserManagementService
             app.UseRouting();
             app.UseAuthentication();
 
-            //app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseIdentityServer();

@@ -5,6 +5,10 @@ VisualStudioVersion = 16.0.29709.97
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UserManagementService", "UserManagementService\UserManagementService.csproj", "{A82AFF2B-780F-40DB-9897-706ADAB9F77E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MemorizeThat.EmailManagement.Abstractions", "MemorizeThat.EmailManagement.Abstractions\MemorizeThat.EmailManagement.Abstractions.csproj", "{32F51A90-0860-48DC-97E1-071070A719A7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MemorizeThat.EmailManagement.SendGrid", "MemorizeThat.EmailManagement.SendGrid\MemorizeThat.EmailManagement.SendGrid.csproj", "{9C4927A1-14C0-4158-A64F-7762D801E585}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +19,14 @@ Global
 		{A82AFF2B-780F-40DB-9897-706ADAB9F77E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A82AFF2B-780F-40DB-9897-706ADAB9F77E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A82AFF2B-780F-40DB-9897-706ADAB9F77E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{32F51A90-0860-48DC-97E1-071070A719A7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{32F51A90-0860-48DC-97E1-071070A719A7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{32F51A90-0860-48DC-97E1-071070A719A7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{32F51A90-0860-48DC-97E1-071070A719A7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9C4927A1-14C0-4158-A64F-7762D801E585}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9C4927A1-14C0-4158-A64F-7762D801E585}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9C4927A1-14C0-4158-A64F-7762D801E585}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9C4927A1-14C0-4158-A64F-7762D801E585}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

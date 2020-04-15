@@ -23,6 +23,7 @@ using Microsoft.Extensions.Hosting;
 using System;
 using System.Threading.Tasks;
 using UserManagementService.Abstractions;
+using MemorizeThat.EmailManagement.SendGrid.Configuration;
 
 namespace UserManagementService
 {
@@ -90,10 +91,14 @@ namespace UserManagementService
                    options.Audience = "UserManagement";
                });
 
+            services.AddSendgridEmailSender(Configuration);
             services.AddTransient<IReturnUrlParser, Helpers.ReturnUrlParser>();
             services.AddTransient<IPersistedGrantStore, PersistedGrantStore>();
             services.AddTransient<IInitializationHelper, InitializationHelper>();
-            
+            services.Configure<EmailConfiguration>(Configuration.GetSection(nameof(EmailConfiguration)));
+            services.Configure<AppConfiguration>(Configuration.GetSection(nameof(AppConfiguration)));
+
+
             services.AddCors(setup =>
             {
                 setup.AddDefaultPolicy(policy =>

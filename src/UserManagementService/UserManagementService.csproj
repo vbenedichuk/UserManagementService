@@ -25,6 +25,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\MemorizeThat.EmailManagement.Abstractions\MemorizeThat.EmailManagement.Abstractions.csproj" />
+    <ProjectReference Include="..\MemorizeThat.EmailManagement.SendGrid\MemorizeThat.EmailManagement.SendGrid.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Update="appsettings.Development.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>

@@ -1,0 +1,20 @@
+﻿{
+  "roles": [
+    "admin",
+    "user"
+  ],
+  "users": [
+    {
+      "email": "vbenedichuk@gmail.com",
+      "user_name": "admin",
+      "claims": {
+        "name": "Vyacheslav Benedichuk",
+        "given_name": "Vyacheslav",
+        "family_name": "Benedichuk"
+      },
+      "roles": [
+        "admin"
+      ]
+    }
+  ]
+}

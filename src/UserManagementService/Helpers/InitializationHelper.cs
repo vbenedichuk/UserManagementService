@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using MemorizeThat.EmailManagement.Abstractions;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -9,6 +11,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using UserManagementService.Abstractions;
 using UserManagementService.Data;
+using UserManagementService.Models.Configuration;
 using UserManagementService.Models.Database;
 using UserManagementService.Models.Initialization;
 
@@ -23,16 +26,25 @@ namespace UserManagementService.Helpers
         UserManager<ApplicationUser> _userManager;
         RoleManager<IdentityRole> _roleManager;
         ILogger<IInitializationHelper> _logger;
+        IEmailSender _emailSender;
+        EmailConfiguration _emailConfiguration;
+        AppConfiguration _appConfiguration;
 
         public InitializationHelper(ApplicationDbContext context,
             UserManager<ApplicationUser> userManager,
             RoleManager<IdentityRole> roleManager,
-            ILogger<IInitializationHelper> logger)
+            ILogger<IInitializationHelper> logger,
+            IEmailSender emailSender,
+            IOptions<EmailConfiguration> emailConfiguration,
+            IOptions<AppConfiguration> appConfiguration)
         {
             _context = context;
             _userManager = userManager;
             _roleManager = roleManager;
             _logger = logger;
+            _emailSender = emailSender;
+            _emailConfiguration = emailConfiguration.Value;
+            _appConfiguration = appConfiguration.Value;
         }
 
         public void Initialize()
@@ -62,7 +74,7 @@ namespace UserManagementService.Helpers
                     Email = userRecord.Email,
                     UserName = userRecord.UserName
                 };
-
+                
                 var result = _userManager.CreateAsync(user).Result;
                 if (!result.Succeeded)
                 {
@@ -96,6 +108,13 @@ namespace UserManagementService.Helpers
                         throw new ApplicationException("Initialization failed.");
                     }
                 }
+                var passwordResetToken = _userManager.GeneratePasswordResetTokenAsync(user).Result;
+                _emailSender.SendEmailAsync(
+                    userRecord.Email,
+                    _emailConfiguration.SystemFrom,
+                    _emailConfiguration.SystemFromName, 
+                    "Reset your password", 
+                    string.Format("Please reset your password: {0}ResetPassword?passwordResetToken={1}", _appConfiguration.ApplicationDomain, passwordResetToken));
             }
             _logger.LogInformation("Database Initialized.");
         }

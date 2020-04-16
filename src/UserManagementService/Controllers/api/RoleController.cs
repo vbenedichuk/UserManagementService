@@ -11,7 +11,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace UserManagementService.Controllers
+namespace UserManagementService.Controllers.Api
 {
     [Route("api/[controller]")]
     [ApiController]

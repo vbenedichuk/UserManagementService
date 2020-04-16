@@ -40,7 +40,7 @@ namespace MemorizeThat.EmailManagement.SendGrid
                 HtmlContent = message
             };
             msg.AddTo(new EmailAddress(toEmail)); 
-            msg.SetClickTracking(true, true);
+            msg.SetClickTracking(false, false);
 
             return client.SendEmailAsync(msg);
         }

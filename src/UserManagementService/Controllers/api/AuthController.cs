@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
-namespace UserManagementService.Controllers
+namespace UserManagementService.Controllers.Api
 {
     [Route("api/[controller]")]
     [ApiController]

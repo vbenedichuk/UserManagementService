@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
-namespace UserManagementService.Controllers
+namespace UserManagementService.Controllers.Api
 {
     [Route("api/[controller]")]
     [ApiController]

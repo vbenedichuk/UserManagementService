@@ -9,6 +9,7 @@ using System.IO;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using System.Web;
 using UserManagementService.Abstractions;
 using UserManagementService.Data;
 using UserManagementService.Models.Configuration;
@@ -114,7 +115,11 @@ namespace UserManagementService.Helpers
                     _emailConfiguration.SystemFrom,
                     _emailConfiguration.SystemFromName, 
                     "Reset your password", 
-                    string.Format("Please reset your password: {0}ResetPassword?passwordResetToken={1}", _appConfiguration.ApplicationDomain, passwordResetToken));
+                    string.Format(
+                        "Please reset your password: {0}user/ResetPassword?passwordResetToken={1}&userId={2}",
+                        _appConfiguration.ApplicationDomain,
+                        HttpUtility.UrlEncode(passwordResetToken),
+                        user.Id));
             }
             _logger.LogInformation("Database Initialized.");
         }

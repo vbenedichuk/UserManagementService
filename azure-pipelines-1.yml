@@ -29,7 +29,7 @@ steps:
     configMode: 'file'
     projectKey: 'vbenedichuk_UserManagementService'
     projectName: 'UserManagementService'
-    extraProperties: 
+    extraProperties: |
       sonar.exclusions=src/UserManagementService/wwwroot/****
 - task: VSBuild@1
   inputs:
@@ -42,5 +42,5 @@ steps:
   inputs:
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
-
+    
 - task: SonarCloudAnalyze@1

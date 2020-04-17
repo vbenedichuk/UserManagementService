@@ -1,19 +1,19 @@
 ﻿{
   "roles": [
-    "admin",
-    "user"
+    "Admin",
+    "User"
   ],
   "users": [
     {
       "email": "vbenedichuk@gmail.com",
-      "user_name": "admin",
+      "user_name": "Admin",
       "claims": {
         "name": "Vyacheslav Benedichuk",
         "given_name": "Vyacheslav",
         "family_name": "Benedichuk"
       },
       "roles": [
-        "admin"
+        "Admin"
       ]
     }
   ]

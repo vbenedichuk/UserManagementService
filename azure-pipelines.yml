@@ -25,5 +25,6 @@ stages:
       inputs:
         command: build
         dockerfile: '$(Build.SourcesDirectory)/src/UserManagementService/Dockerfile'
+        buildContext: '$(Build.SourcesDirectory)/src/'
         tags: |
           $(tag)

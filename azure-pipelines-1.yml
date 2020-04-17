@@ -24,12 +24,10 @@ steps:
   displayName: 'Prepare analysis on SonarCloud'
   inputs:
     projectKey: vbenedichuk_UserManagementService
-    SonarCloud: 'SC'
+    SonarCloud: 'https://sonarcloud.io'
     organization: 'vbenedichuk-github'
     scannerMode: 'CLI'
     configMode: 'file'
-
-
 - task: VSBuild@1
   inputs:
     solution: '$(solution)'

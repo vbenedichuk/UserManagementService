@@ -23,11 +23,12 @@ steps:
 - task: SonarCloudPrepare@1
   displayName: 'Prepare analysis on SonarCloud'
   inputs:
-    projectKey: vbenedichuk_UserManagementService
     SonarCloud: 'vb-sonar'
     organization: 'vbenedichuk-github'
-    scannerMode: 'CLI'
+    scannerMode: 'MSBuild'
     configMode: 'file'
+    projectKey: 'vbenedichuk_UserManagementService'
+    projectName: 'UserManagementService'
 - task: VSBuild@1
   inputs:
     solution: '$(solution)'

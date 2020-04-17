@@ -83,10 +83,6 @@ namespace UserManagementService.Controllers.Api
                     Code = "internal_error",
                     Message = "Role is not available for editing."
                 });
-            }
-
-            if (errorList.Count > 0)
-            {
                 return BadRequest(new UiResponse(false, errorList));
             }
 

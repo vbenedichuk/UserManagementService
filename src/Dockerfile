@@ -7,16 +7,15 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/core/sdk:3.1-buster AS build
 WORKDIR /src
-COPY ["AuthenticationService/AuthenticationService.csproj", "AuthenticationService/"]
-RUN dotnet restore "AuthenticationService/AuthenticationService.csproj"
 COPY . .
-WORKDIR "/src/AuthenticationService"
-RUN dotnet build "AuthenticationService.csproj" -c Release -o /app/build
+RUN dotnet restore "UserManagementService/UserManagementService.csproj" 
+WORKDIR "/src/UserManagementService"
+RUN dotnet build "UserManagementService.csproj" -c Release -o /app/build 
 
 FROM build AS publish
-RUN dotnet publish "AuthenticationService.csproj" -c Release -o /app/publish
+RUN dotnet publish "UserManagementService.csproj" -c Release -o /app/publish
 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "AuthenticationService.dll"]
+ENTRYPOINT ["dotnet", "UserManagementService.dll"]

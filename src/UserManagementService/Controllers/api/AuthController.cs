@@ -41,7 +41,6 @@ namespace UserManagementService.Controllers.Api
                     var user = await _userManager.FindByNameAsync(model.Username);
                     if (user != null && context != null)
                     {
-                        //await HttpContext.SignInAsync(user.SubjectId, user.UserName);
                         return new JsonResult(new { RedirectUrl = model.ReturnUrl, IsOk = true });
                     }
                 }

@@ -23,13 +23,13 @@ namespace UserManagementService.Helpers
     /// </summary>
     class InitializationHelper : IInitializationHelper
     {
-        ApplicationDbContext _context;
-        UserManager<ApplicationUser> _userManager;
-        RoleManager<IdentityRole> _roleManager;
-        ILogger<IInitializationHelper> _logger;
-        IEmailSender _emailSender;
-        EmailConfiguration _emailConfiguration;
-        AppConfiguration _appConfiguration;
+        private readonly ApplicationDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly ILogger<IInitializationHelper> _logger;
+        private readonly IEmailSender _emailSender;
+        private readonly EmailConfiguration _emailConfiguration;
+        private readonly AppConfiguration _appConfiguration;
 
         public InitializationHelper(ApplicationDbContext context,
             UserManager<ApplicationUser> userManager,

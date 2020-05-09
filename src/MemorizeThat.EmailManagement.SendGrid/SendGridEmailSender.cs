@@ -5,14 +5,13 @@ using MemorizeThat.EmailManagement.SendGrid.Exceptions;
 using Microsoft.Extensions.Options;
 using SendGrid;
 using SendGrid.Helpers.Mail;
-using System;
 using System.Threading.Tasks;
 
 namespace MemorizeThat.EmailManagement.SendGrid
 {
     public class SendGridEmailSender : IEmailSender
     {
-        private SendGridConfiguration _sendGridConfiguration;
+        private readonly SendGridConfiguration _sendGridConfiguration;
 
         public SendGridEmailSender([NotNull]IOptions<SendGridConfiguration> sendGridConfiguration)
         {

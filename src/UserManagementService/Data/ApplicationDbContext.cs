@@ -15,10 +15,10 @@ namespace UserManagementService.Data
         {
         }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        protected override void OnModelCreating(ModelBuilder builder)
         {
-            modelBuilder.Entity<PersistedGrant>().HasKey(x => x.Key);
-            base.OnModelCreating(modelBuilder);
+            builder.Entity<PersistedGrant>().HasKey(x => x.Key);
+            base.OnModelCreating(builder);
         }
 
         public DbSet<PersistedGrant> PersistedGrants { get; set; }

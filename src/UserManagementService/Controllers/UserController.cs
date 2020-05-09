@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -12,8 +10,8 @@ namespace UserManagementService.Controllers
 {
     public class UserController : Controller
     {
-        UserManager<ApplicationUser> _userManager;
-        ILogger<UserController> _logger;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly ILogger<UserController> _logger;
 
         public UserController(
             UserManager<ApplicationUser> userManager,

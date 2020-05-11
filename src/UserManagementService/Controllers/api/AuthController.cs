@@ -61,7 +61,6 @@ namespace UserManagementService.Controllers.Api
                     message.ErrorDescription = null;
                 }
             }
-
             return Ok(message);
         }
     }

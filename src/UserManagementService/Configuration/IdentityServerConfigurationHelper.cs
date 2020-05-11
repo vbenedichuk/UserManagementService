@@ -65,14 +65,22 @@ namespace UserManagementService.Configuration
                     },
 
                     // where to redirect to after login
-                    RedirectUris = { "http://localhost:4200/callback", "http://localhost:4200/silent-renew.html" },
+                    RedirectUris = { 
+                        "http://localhost:4200/callback", 
+                        "http://localhost:4200/silent-renew.html",
+                        "https://auth.localservice/callback",
+                        "https://auth.localservice/silent-renew.html" },
 
                     // where to redirect to after logout
-                    PostLogoutRedirectUris = { "http://localhost:4200/logout" },
+                    PostLogoutRedirectUris = { 
+                        "http://localhost:4200/logout",
+                        "https://auth.localservice/logout"
+                    },
                     AllowedCorsOrigins = new List<string>
                     {
                         "http://localhost:4200",
-                        "http://localhost:8080"
+                        "http://localhost:8080",
+                        "https://auth.localservice"
                     },
                 }
             };

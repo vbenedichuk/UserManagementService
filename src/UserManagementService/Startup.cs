@@ -159,6 +159,7 @@ namespace UserManagementService
             }
 
             app.UseHttpsRedirection();
+            app.UsePathBase("/auth");
 
             app.UseStaticFiles();
 

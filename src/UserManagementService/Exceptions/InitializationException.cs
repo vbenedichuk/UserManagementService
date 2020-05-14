@@ -5,6 +5,7 @@ namespace UserManagementService.Exceptions
     /// <summary>
     /// Initialization exception.
     /// </summary>
+    [Serializable]
     public class InitializationException : Exception
     {
 

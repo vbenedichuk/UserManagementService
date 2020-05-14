@@ -4,14 +4,13 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Security.Claims;
-using System.Threading.Tasks;
 using System.Web;
 using UserManagementService.Abstractions;
 using UserManagementService.Data;
+using UserManagementService.Exceptions;
 using UserManagementService.Models.Configuration;
 using UserManagementService.Models.Database;
 using UserManagementService.Models.Initialization;
@@ -53,7 +52,7 @@ namespace UserManagementService.Helpers
             if(_context.Users.Any() || _context.Roles.Any())
             {
                 _logger.LogInformation("DB is already initialized.");
-                throw new ApplicationException("Initialization failed.");
+                throw new InitializationException("Initialization failed.");
             }
             _logger.LogInformation("Initialization started.");
 
@@ -83,7 +82,7 @@ namespace UserManagementService.Helpers
                     {
                         _logger.LogError("{0} {1}", error.Code, error.Description);
                     }
-                    throw new ApplicationException("Initialization failed.");
+                    throw new InitializationException("Initialization failed.");
                 }
                 foreach(var userRole in userRecord.Roles)
                 {
@@ -94,7 +93,7 @@ namespace UserManagementService.Helpers
                         {
                             _logger.LogError("{0} {1}", error.Code, error.Description);
                         }
-                        throw new ApplicationException("Initialization failed.");
+                        throw new InitializationException("Initialization failed.");
                     }
                 }
                 foreach(var key in userRecord.Claims.Keys)
@@ -106,7 +105,7 @@ namespace UserManagementService.Helpers
                         {
                             _logger.LogError("{0} {1}", error.Code, error.Description);
                         }
-                        throw new ApplicationException("Initialization failed.");
+                        throw new InitializationException("Initialization failed.");
                     }
                 }
                 var passwordResetToken = _userManager.GeneratePasswordResetTokenAsync(user).Result;

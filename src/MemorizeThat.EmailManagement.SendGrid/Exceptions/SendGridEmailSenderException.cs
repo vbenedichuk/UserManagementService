@@ -5,7 +5,7 @@ namespace MemorizeThat.EmailManagement.SendGrid.Exceptions
     /// <summary>
     /// Send grid email sender exception.
     /// </summary>
-    [SerializableAttribute]
+    [Serializable]
     public class SendGridEmailSenderException : Exception
     {
         /// <summary>

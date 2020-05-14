@@ -4,9 +4,11 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Security.Claims;
+using System.Threading.Tasks;
 using System.Web;
 using UserManagementService.Abstractions;
 using UserManagementService.Data;
@@ -66,7 +68,7 @@ namespace UserManagementService.Helpers
                     NormalizedName = role.ToLower()
                 }).Wait();
             }
-
+            var emailTasks = new List<Task>();
             foreach(var userRecord in data.Users)
             {
                 var user = new ApplicationUser
@@ -109,7 +111,8 @@ namespace UserManagementService.Helpers
                     }
                 }
                 var passwordResetToken = _userManager.GeneratePasswordResetTokenAsync(user).Result;
-                _emailSender.SendEmailAsync(
+                _logger.LogDebug("Sending reset password email to {0}", userRecord.Email);
+                emailTasks.Add(_emailSender.SendEmailAsync(
                     userRecord.Email,
                     _emailConfiguration.SystemFrom,
                     _emailConfiguration.SystemFromName, 
@@ -118,8 +121,9 @@ namespace UserManagementService.Helpers
                         "Please reset your password: {0}user/ResetPassword?passwordResetToken={1}&userId={2}",
                         _appConfiguration.ApplicationDomain,
                         HttpUtility.UrlEncode(passwordResetToken),
-                        user.Id));
+                        user.Id)));
             }
+            Task.WaitAll(emailTasks.ToArray());
             _logger.LogInformation("Database Initialized.");
         }
     }

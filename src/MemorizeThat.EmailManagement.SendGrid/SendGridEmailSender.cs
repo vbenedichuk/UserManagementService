@@ -28,26 +28,30 @@ namespace MemorizeThat.EmailManagement.SendGrid
             _logger = logger;
         }
 
-        public Task SendEmailAsync(
+        public async Task SendEmailAsync(
             [NotNull] string toEmail, 
             [NotNull] string fromEmail,
             [NotNull] string fromName,
             [NotNull] string subject, 
             [NotNull] string message)
         {
-            _logger.LogDebug("Sending email to {0}", toEmail);
-            var client = new SendGridClient(_sendGridConfiguration.ApiKey);
-            var msg = new SendGridMessage()
+            await Task.Run(async() =>
             {
-                From = new EmailAddress(fromEmail, fromName),
-                Subject = subject,
-                PlainTextContent = message,
-                HtmlContent = message
-            };
-            msg.AddTo(new EmailAddress(toEmail)); 
-            msg.SetClickTracking(false, false);
+                _logger.LogDebug("Sending email to {0}", toEmail);
+                var client = new SendGridClient(_sendGridConfiguration.ApiKey);
+                var msg = new SendGridMessage()
+                {
+                    From = new EmailAddress(fromEmail, fromName),
+                    Subject = subject,
+                    PlainTextContent = message,
+                    HtmlContent = message
+                };
+                msg.AddTo(new EmailAddress(toEmail));
+                msg.SetClickTracking(false, false);
 
-            return client.SendEmailAsync(msg);
+                var result = await client.SendEmailAsync(msg);
+                _logger.LogDebug("Message sent {0} {1}", result.StatusCode, await result.Body.ReadAsStringAsync());
+            }).ConfigureAwait(false);
         }
     }
 }

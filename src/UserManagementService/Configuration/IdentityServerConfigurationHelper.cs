@@ -68,13 +68,13 @@ namespace UserManagementService.Configuration
                     RedirectUris = { 
                         "http://localhost:4200/callback", 
                         "http://localhost:4200/silent-renew.html",
-                        "https://auth.localservice/callback",
+                        "https://auth.localservice/",
                         "https://auth.localservice/silent-renew.html" },
 
                     // where to redirect to after logout
                     PostLogoutRedirectUris = { 
                         "http://localhost:4200/logout",
-                        "https://auth.localservice/logout"
+                        "https://auth.localservice/auth/logout"
                     },
                     AllowedCorsOrigins = new List<string>
                     {

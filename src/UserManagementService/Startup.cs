@@ -106,7 +106,8 @@ namespace UserManagementService
                     policy.WithOrigins("http://127.0.0.1:8080", 
                         "http://localhost:8080", 
                         "http://localhost:8082", 
-                        "http://localhost:4200");
+                        "http://localhost:4200", 
+                        "https://auth.localservice/");
                     policy.AllowCredentials();
                 });
             });

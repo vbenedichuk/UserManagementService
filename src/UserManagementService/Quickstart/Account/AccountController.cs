@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
-
 using UserManagementService.Models.Database;
 using IdentityModel;
 using IdentityServer4.Events;
@@ -46,45 +45,6 @@ namespace IdentityServer4.Quickstart.UI
             _clientStore = clientStore;
             _schemeProvider = schemeProvider;
             _events = events;
-        }
-
-        /// <summary>
-        /// Entry point into the login workflow
-        /// </summary>
-        [HttpGet("Initialize")]
-        public async Task<IActionResult> Initialize()
-        {
-            if (!_userManager.Users.Any())
-            {
-                var identityResult = await _userManager.CreateAsync(new ApplicationUser
-                {
-                    Email = "vbenedichuk@gmail.com",
-                    EmailConfirmed = true,
-                    NormalizedEmail = "vbenedichuk@gmail.com",
-                    NormalizedUserName = "admin",
-                    UserName = "admin"
-                }, "Pass@word123");              
-                
-
-            }
-            var user = await _userManager.FindByNameAsync("admin");
-            if(user != null)
-            {
-                var claims = await _userManager.GetClaimsAsync(user);
-                if (!claims.Any())
-                {
-                    var result = _userManager.AddClaimsAsync(user, new Claim[]{
-                        new Claim(JwtClaimTypes.Name, "Alice Smith"),
-                        new Claim(JwtClaimTypes.GivenName, "Alice"),
-                        new Claim(JwtClaimTypes.FamilyName, "Smith"),
-                        new Claim(JwtClaimTypes.Email, "AliceSmith@email.com"),
-                        new Claim(JwtClaimTypes.EmailVerified, "true", ClaimValueTypes.Boolean),
-                        new Claim(JwtClaimTypes.WebSite, "http://alice.com"),
-                        new Claim(JwtClaimTypes.Address, @"{ 'street_address': 'One Hacker Way', 'locality': 'Heidelberg', 'postal_code': 69118, 'country': 'Germany' }", IdentityServer4.IdentityServerConstants.ClaimValueTypes.Json)
-                    }).Result;
-                }
-            }
-            return Ok("Completed!");
         }
 
         /// <summary>

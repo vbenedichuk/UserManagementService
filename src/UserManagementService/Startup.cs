@@ -96,7 +96,6 @@ namespace UserManagementService
             services.Configure<EmailConfiguration>(Configuration.GetSection(nameof(EmailConfiguration)));
             services.Configure<AppConfiguration>(Configuration.GetSection(nameof(AppConfiguration)));
 
-
             services.AddCors(setup =>
             {
                 setup.AddDefaultPolicy(policy =>

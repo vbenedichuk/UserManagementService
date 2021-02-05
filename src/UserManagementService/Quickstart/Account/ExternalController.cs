@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using UserManagementService.Exceptions;
 
 namespace IdentityServer4.Quickstart.UI
 {
@@ -54,10 +55,10 @@ namespace IdentityServer4.Quickstart.UI
             if (string.IsNullOrEmpty(returnUrl)) returnUrl = "~/";
 
             // validate returnUrl - either it is a valid OIDC URL or back to a local page
-            if (Url.IsLocalUrl(returnUrl) == false && _interaction.IsValidReturnUrl(returnUrl) == false)
+            if (!Url.IsLocalUrl(returnUrl) && !_interaction.IsValidReturnUrl(returnUrl))
             {
                 // user might have clicked on a malicious link - should be logged
-                throw new Exception("invalid return URL");
+                throw new AuthorizationException("invalid return URL");
             }
 
             if (AccountOptions.WindowsAuthenticationSchemeName == provider)
@@ -92,7 +93,7 @@ namespace IdentityServer4.Quickstart.UI
             var result = await HttpContext.AuthenticateAsync(IdentityConstants.ExternalScheme);
             if (result?.Succeeded != true)
             {
-                throw new Exception("External authentication error");
+                throw new AuthorizationException("External authentication error");
             }
 
             if (_logger.IsEnabled(LogLevel.Debug))
@@ -138,14 +139,11 @@ namespace IdentityServer4.Quickstart.UI
             var context = await _interaction.GetAuthorizationContextAsync(returnUrl);
             await _events.RaiseAsync(new UserLoginSuccessEvent(provider, providerUserId, user.Id, name, true, context?.ClientId));
 
-            if (context != null)
-            {
-                if (await _clientStore.IsPkceClientAsync(context.ClientId))
-                {
-                    // if the client is PKCE then we assume it's native, so this change in how to
-                    // return the response is for better UX for the end user.
-                    return View("Redirect", new RedirectViewModel { RedirectUrl = returnUrl });
-                }
+            if (context != null && await _clientStore.IsPkceClientAsync(context.ClientId))
+            { 
+                // if the client is PKCE then we assume it's native, so this change in how to
+                // return the response is for better UX for the end user.
+                return View("Redirect", new RedirectViewModel { RedirectUrl = returnUrl });                
             }
 
             return Redirect(returnUrl);
@@ -208,7 +206,7 @@ namespace IdentityServer4.Quickstart.UI
             // depending on the external provider, some other claim type might be used
             var userIdClaim = externalUser.FindFirst(JwtClaimTypes.Subject) ??
                               externalUser.FindFirst(ClaimTypes.NameIdentifier) ??
-                              throw new Exception("Unknown userid");
+                              throw new AuthorizationException("Unknown userid");
 
             // remove the user id claim so we don't include it as an extra claim if/when we provision the user
             var claims = externalUser.Claims.ToList();
@@ -268,16 +266,16 @@ namespace IdentityServer4.Quickstart.UI
                 UserName = Guid.NewGuid().ToString(),
             };
             var identityResult = await _userManager.CreateAsync(user);
-            if (!identityResult.Succeeded) throw new Exception(identityResult.Errors.First().Description);
+            if (!identityResult.Succeeded) throw new AuthorizationException(identityResult.Errors.First().Description);
 
             if (filtered.Any())
             {
                 identityResult = await _userManager.AddClaimsAsync(user, filtered);
-                if (!identityResult.Succeeded) throw new Exception(identityResult.Errors.First().Description);
+                if (!identityResult.Succeeded) throw new AuthorizationException(identityResult.Errors.First().Description);
             }
 
             identityResult = await _userManager.AddLoginAsync(user, new UserLoginInfo(provider, providerUserId, provider));
-            if (!identityResult.Succeeded) throw new Exception(identityResult.Errors.First().Description);
+            if (!identityResult.Succeeded) throw new AuthorizationException(identityResult.Errors.First().Description);
 
             return user;
         }

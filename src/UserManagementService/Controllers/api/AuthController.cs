@@ -5,6 +5,7 @@ using IdentityServer4.Services;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Hosting;
 
 namespace UserManagementService.Controllers.Api
 {
@@ -16,12 +17,12 @@ namespace UserManagementService.Controllers.Api
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IIdentityServerInteractionService _interaction;
         private readonly SignInManager<ApplicationUser> _signInManager;
-        private readonly IHostingEnvironment _environment;
+        private readonly IWebHostEnvironment _environment;
 
         public AuthController(IIdentityServerInteractionService interaction,
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
-            IHostingEnvironment environment)
+            IWebHostEnvironment environment)
         {
             _interaction = interaction;
             _userManager = userManager;
